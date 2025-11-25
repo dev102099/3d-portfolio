@@ -1,103 +1,249 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { Canvas, useFrame } from "@react-three/fiber";
+import { Suspense, useRef, useState } from "react";
+import {
+  Cloud,
+  Clouds,
+  OrbitControls,
+  ScrollControls,
+  Stars,
+} from "@react-three/drei";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
+import OceanSurface from "@/components/Water";
+import * as THREE from "three";
+import GoldenParticles from "@/components/GoldenParticles";
+import FireRing from "@/components/FireRing";
+import StoneSlab from "@/components/StoneSlab";
+import SceneNavigation from "@/components/SceneNav";
+import ZoomButtons from "@/components/ZoomButtons";
+import ZoomHandler from "@/components/ZoomHandler";
+import ProjectHotspot from "@/components/Hotspot";
+
+const MovingSphere = ({ meshRef, lightRef }) => {
+  useFrame((state) => {
+    if (!meshRef.current || !lightRef.current) return;
+
+    const distance = 2.5;
+
+    const vFOV = THREE.MathUtils.degToRad(state.camera.fov);
+    const height = 2 * Math.tan(vFOV / 2) * distance;
+    const width = height * state.camera.aspect;
+
+    const x = (state.pointer.x * width) / 2;
+    const y = (state.pointer.y * height) / 2;
+
+    const target = new THREE.Vector3(x, y, -distance);
+
+    target.applyMatrix4(state.camera.matrixWorld);
+
+    meshRef.current.position.copy(target);
+    lightRef.current.position.copy(target);
+  });
+
+  return null;
+};
+
+export default function RealNightOcean() {
+  const glowRef = useRef();
+  const lightRef = useRef();
+  const [zoom, setZoom] = useState(1);
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+    <div className="relative h-full w-full">
+      <ZoomButtons setZoom={setZoom} zoom={zoom} />
+      <Canvas camera={{ position: [0, 20, 60], fov: 55, far: 20000 }}>
+        <ZoomHandler targetZoom={zoom} />
+        <ScrollControls>
+          <SceneNavigation /> <ambientLight intensity={0.4} />
+          <Clouds frustumCulled={false}>
+            <Cloud
+              segments={45}
+              opacity={0.09}
+              scale={150}
+              speed={0.5}
+              growth={2}
+              color="white"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+          </Clouds>
+          <GoldenParticles count={3000} />
+          <FireRing position={[50, -11, 0]} scale={6} />
+          <FireRing position={[-50, -11, 0]} scale={6} />
+          <FireRing position={[-50, -11, -100]} scale={6} />
+          <FireRing position={[50, -11, -100]} scale={6} />
+          <FireRing position={[0, -11, -50]} scale={6} />
+          {/* 3. Movement Controller */}
+          <MovingSphere meshRef={glowRef} lightRef={lightRef} />
+          <Suspense>
+            {/* landing */}
+            <StoneSlab
+              rotation={[Math.PI / 2, -1.57, 0]}
+              position={[50, 0, 0]}
+              normalValue={[4, 4]}
+              label={"Hi"}
+              roughness={0.5}
+              model={"textures/model/landing/landing.glb"}
+              meshName={"low_landing"}
+              normal={"textures/model/landing/final_normal_landing.exr"}
+              color={"textures/model/landing/final_color_landing.exr"}
+            />
+
+            {/* workex */}
+            <StoneSlab
+              rotation={[Math.PI / 2, -1.57, 0]}
+              position={[-50, 0, 0]}
+              normalValue={[4, 4]}
+              roughness={0.5}
+              model={"textures/model/work/workEx.glb"}
+              meshName={"low_work"}
+              normal={"textures/model/work/normal_work.exr"}
+              color={"textures/model/work/color_work.exr"}
+            />
+
+            {/* project */}
+            <StoneSlab
+              rotation={[Math.PI / 2, -1.57, 0]}
+              normalValue={[4, 4]}
+              children={
+                <>
+                  <ProjectHotspot
+                    name="AI Mock Interview Platform"
+                    url="https://ai-mock-interview-platform-z5b7.vercel.app"
+                    position={[-1, 0, 0.3]}
+                    htmlPos={[1.5, 1, -0.3]}
+                    args={[0.3, 0.5, 1.2]}
+                  />
+                  <ProjectHotspot
+                    name="AI Document Summarizer"
+                    url="https://ai-document-summary.onrender.com"
+                    position={[-0.4, 0, 0.3]}
+                    htmlPos={[1.7, 1, -0.3]}
+                    args={[0.1, 0.5, 1.2]}
+                  />
+                  <ProjectHotspot
+                    name="BrickByBrick - Property Marketplace"
+                    url="http://brickbybrick-a-real-estate-website-1.onrender.com"
+                    position={[0.25, 0, 0.3]}
+                    htmlPos={[1.7, 1, -0.3]}
+                    args={[0.2, 0.5, 1.2]}
+                  />
+                </>
+              }
+              position={[-50, 0, -100]}
+              model={"textures/model/projects/projects-new.glb"}
+              meshName={"low_project"}
+              roughness={0.5}
+              normal={"textures/model/projects/normal_project.001.exr"}
+              color={"textures/model/projects/ao_project_final.exr"}
+            />
+
+            {/* skills */}
+            <StoneSlab
+              rotation={[Math.PI / 2, -1.57, 0]}
+              position={[50, 0, -100]}
+              normalValue={[4, 4]}
+              roughness={0.5}
+              model={"textures/model/skills/skills-3.glb"}
+              meshName={"Cube002"}
+              normal={"textures/model/skills/normal_skills.exr"}
+              color={"textures/model/skills/color_skills.exr"}
+            />
+
+            {/* contact */}
+            <StoneSlab
+              rotation={[Math.PI / 2, -1.57, 0]}
+              position={[0, 0, -50]}
+              normalValue={[2, 2]}
+              roughness={2}
+              model={"textures/model/contact/Contact.glb"}
+              meshName={"low_conatct"}
+              normal={"textures/model/contact/final_normal_contact.png"}
+              color={"textures/model/contact/final_color_contact.jpg"}
+              children={
+                <>
+                  <ProjectHotspot
+                    position={[-0.38, 0, 0.1]}
+                    args={[0.25, 0.5, 1.7]}
+                    name={"devparpyani@gmail.com"}
+                    img={"/textures/model/contact/communication.png"}
+                    htmlPos={[3.9, 1, 0]}
+                    contact={true}
+                  />
+                  <ProjectHotspot
+                    position={[-0.1, 0, 0.1]}
+                    args={[0.25, 0.5, 1.7]}
+                    name={"Github"}
+                    img={"/textures/model/contact/github-sign.png"}
+                    url={"http://github.com/dev102099"}
+                    htmlPos={[3.9, 1, 0]}
+                    contact={true}
+                  />
+                  <ProjectHotspot
+                    position={[0.2, 0, 0.2]}
+                    args={[0.2, 0.5, 1.4]}
+                    name={"+91 9302769377"}
+                    img={"/textures/model/contact/call.png"}
+                    htmlPos={[4.2, 1, 0]}
+                    contact={true}
+                  />
+                  <ProjectHotspot
+                    position={[0.55, 0, 0.1]}
+                    args={[0.28, 0.5, 1.7]}
+                    name={"LinkedIn"}
+                    img={"/textures/model/contact/linkedin.png"}
+                    url={"http://www.linkedin.com/in/dev-p-42449822a"}
+                    htmlPos={[4.5, 1, 0]}
+                    contact={true}
+                  />
+                  <ProjectHotspot
+                    position={[1.4, 0, 0]}
+                    args={[0.28, 0.5, 1.7]}
+                    name={"Gwalior, Madhya Pradesh, India"}
+                    img={"/textures/model/contact/maps-and-flags.png"}
+                    htmlPos={[4.8, 1, 0]}
+                    contact={true}
+                  />
+                </>
+              }
+            />
+          </Suspense>
+          {/* 4. The Glowing Object Group */}
+          <group>
+            <mesh ref={glowRef}>
+              <sphereGeometry args={[0.03, 32, 32]} />
+
+              <meshStandardMaterial
+                emissive="white"
+                emissiveIntensity={4}
+                toneMapped={false}
+              />
+            </mesh>
+
+            <pointLight
+              ref={lightRef}
+              distance={10}
+              decay={2}
+              color="white"
+              intensity={15}
+            />
+          </group>
+          <OceanSurface />
+          <Stars
+            radius={5000}
+            depth={500}
+            count={5000}
+            factor={1}
+            saturation={10}
+            fade
+            speed={1}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        </ScrollControls>
+
+        {/* 5. Post Processing - The Safe Configuration */}
+        <EffectComposer disableNormalPass multisampling={0}>
+          <Bloom luminanceThreshold={1} mipmapBlur={true} intensity={1.0} />
+        </EffectComposer>
+      </Canvas>
     </div>
   );
 }
