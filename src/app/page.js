@@ -6,6 +6,7 @@ import {
   Cloud,
   Clouds,
   OrbitControls,
+  Preload,
   ScrollControls,
   Stars,
 } from "@react-three/drei";
@@ -19,6 +20,8 @@ import SceneNavigation from "@/components/SceneNav";
 import ZoomButtons from "@/components/ZoomButtons";
 import ZoomHandler from "@/components/ZoomHandler";
 import ProjectHotspot from "@/components/Hotspot";
+import LoaderOverlay from "@/components/LoaderOverlay";
+import Welcome from "@/components/Welcome";
 
 const MovingSphere = ({ meshRef, lightRef }) => {
   useFrame((state) => {
@@ -48,33 +51,42 @@ export default function RealNightOcean() {
   const glowRef = useRef();
   const lightRef = useRef();
   const [zoom, setZoom] = useState(1);
+  const [intro, setIntro] = useState(true);
+  const [scroll, setScroll] = useState(false);
 
   return (
-    <div className="relative h-full w-full">
-      <ZoomButtons setZoom={setZoom} zoom={zoom} />
-      <Canvas camera={{ position: [0, 20, 60], fov: 55, far: 20000 }}>
-        <ZoomHandler targetZoom={zoom} />
-        <ScrollControls>
-          <SceneNavigation /> <ambientLight intensity={0.4} />
-          <Clouds frustumCulled={false}>
-            <Cloud
-              segments={45}
-              opacity={0.09}
-              scale={150}
-              speed={0.5}
-              growth={2}
-              color="white"
-            />
-          </Clouds>
-          <GoldenParticles count={3000} />
-          <FireRing position={[50, -11, 0]} scale={6} />
-          <FireRing position={[-50, -11, 0]} scale={6} />
-          <FireRing position={[-50, -11, -100]} scale={6} />
-          <FireRing position={[50, -11, -100]} scale={6} />
-          <FireRing position={[0, -11, -50]} scale={6} />
-          {/* 3. Movement Controller */}
-          <MovingSphere meshRef={glowRef} lightRef={lightRef} />
-          <Suspense>
+    <>
+      <div className="relative h-full w-full">
+        <LoaderOverlay />
+        <ZoomButtons setZoom={setZoom} zoom={zoom} />
+        <Canvas camera={{ position: [0, 20, 60], fov: 55, far: 20000 }}>
+          <Suspense fallback={null}>
+            <Welcome scroll={scroll} setScroll={setScroll} />
+            <ZoomHandler targetZoom={zoom} />
+            {scroll && (
+              <ScrollControls>
+                <SceneNavigation active={scroll} />
+              </ScrollControls>
+            )}
+            <ambientLight intensity={0.4} />
+            <Clouds frustumCulled={false}>
+              <Cloud
+                segments={45}
+                opacity={0.09}
+                scale={150}
+                speed={0.5}
+                growth={2}
+                color="white"
+              />
+            </Clouds>
+            <GoldenParticles count={4000} />
+            <FireRing position={[50, -11, 0]} scale={6} />
+            <FireRing position={[-50, -11, 0]} scale={6} />
+            <FireRing position={[-50, -11, -100]} scale={6} />
+            <FireRing position={[50, -11, -100]} scale={6} />
+            <FireRing position={[0, -11, -50]} scale={6} />
+            {/* 3. Movement Controller */}
+
             {/* landing */}
             <StoneSlab
               rotation={[Math.PI / 2, -1.57, 0]}
@@ -87,7 +99,6 @@ export default function RealNightOcean() {
               normal={"textures/model/landing/final_normal_landing.exr"}
               color={"textures/model/landing/final_color_landing.exr"}
             />
-
             {/* workex */}
             <StoneSlab
               rotation={[Math.PI / 2, -1.57, 0]}
@@ -99,7 +110,6 @@ export default function RealNightOcean() {
               normal={"textures/model/work/normal_work.exr"}
               color={"textures/model/work/color_work.exr"}
             />
-
             {/* project */}
             <StoneSlab
               rotation={[Math.PI / 2, -1.57, 0]}
@@ -136,7 +146,6 @@ export default function RealNightOcean() {
               normal={"textures/model/projects/normal_project.001.exr"}
               color={"textures/model/projects/ao_project_final.exr"}
             />
-
             {/* skills */}
             <StoneSlab
               rotation={[Math.PI / 2, -1.57, 0]}
@@ -148,7 +157,6 @@ export default function RealNightOcean() {
               normal={"textures/model/skills/normal_skills.exr"}
               color={"textures/model/skills/color_skills.exr"}
             />
-
             {/* contact */}
             <StoneSlab
               rotation={[Math.PI / 2, -1.57, 0]}
@@ -206,44 +214,51 @@ export default function RealNightOcean() {
                 </>
               }
             />
-          </Suspense>
-          {/* 4. The Glowing Object Group */}
-          <group>
-            <mesh ref={glowRef}>
-              <sphereGeometry args={[0.03, 32, 32]} />
+            {/* 4. The Glowing Object Group */}
+            {scroll && (
+              <>
+                {" "}
+                <MovingSphere meshRef={glowRef} lightRef={lightRef} />
+                <group>
+                  <mesh ref={glowRef}>
+                    <sphereGeometry args={[0.03, 32, 32]} />
 
-              <meshStandardMaterial
-                emissive="white"
-                emissiveIntensity={4}
-                toneMapped={false}
-              />
-            </mesh>
+                    <meshStandardMaterial
+                      emissive="white"
+                      emissiveIntensity={4}
+                      toneMapped={false}
+                    />
+                  </mesh>
 
-            <pointLight
-              ref={lightRef}
-              distance={10}
-              decay={2}
-              color="white"
-              intensity={15}
+                  <pointLight
+                    ref={lightRef}
+                    distance={10}
+                    decay={2}
+                    color="white"
+                    intensity={15}
+                  />
+                </group>
+              </>
+            )}
+            <OceanSurface />
+            <Stars
+              radius={5000}
+              depth={500}
+              count={5000}
+              factor={1}
+              saturation={10}
+              fade
+              speed={1}
             />
-          </group>
-          <OceanSurface />
-          <Stars
-            radius={5000}
-            depth={500}
-            count={5000}
-            factor={1}
-            saturation={10}
-            fade
-            speed={1}
-          />
-        </ScrollControls>
 
-        {/* 5. Post Processing - The Safe Configuration */}
-        <EffectComposer disableNormalPass multisampling={0}>
-          <Bloom luminanceThreshold={1} mipmapBlur={true} intensity={1.0} />
-        </EffectComposer>
-      </Canvas>
-    </div>
+            {/* 5. Post Processing - The Safe Configuration */}
+            <EffectComposer disableNormalPass multisampling={0}>
+              <Bloom luminanceThreshold={1} mipmapBlur={true} intensity={1.0} />
+            </EffectComposer>
+            <Preload all />
+          </Suspense>
+        </Canvas>
+      </div>
+    </>
   );
 }

@@ -20,7 +20,7 @@ const l3 = new THREE.Vector3(50, 0, -100);
 const p4 = new THREE.Vector3(0, 1, -46);
 const l4 = new THREE.Vector3(0, 0, -50);
 
-export default function SceneNavigation() {
+export default function SceneNavigation({ active }) {
   const scroll = useScroll();
 
   const targetPos = useRef(new THREE.Vector3(0, 0, 0));
@@ -51,7 +51,7 @@ export default function SceneNavigation() {
 
     const currentLook = new THREE.Vector3();
     state.camera.getWorldDirection(currentLook).add(state.camera.position);
-    currentLook.lerp(targetLook.current, 0.1);
+    currentLook.lerp(targetLook.current, 0.05);
     state.camera.lookAt(currentLook);
   });
 
