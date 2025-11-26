@@ -53,13 +53,22 @@ export default function RealNightOcean() {
   const [zoom, setZoom] = useState(1);
   const [intro, setIntro] = useState(true);
   const [scroll, setScroll] = useState(false);
+  const [isReady, setIsReady] = useState(false);
 
   return (
     <>
       <div className="relative h-full w-full">
-        <LoaderOverlay />
+        <LoaderOverlay isReady={isReady} />
         <ZoomButtons setZoom={setZoom} zoom={zoom} />
-        <Canvas camera={{ position: [0, 20, 60], fov: 55, far: 20000 }}>
+        <Canvas
+          camera={{ position: [0, 20, 60], fov: 55, far: 20000 }}
+          onCreated={({ gl, scene, camera }) => {
+            // Force a compile of all shaders immediately
+            gl.compile(scene, camera);
+            // Tell React we are ready to show the scene
+            setIsReady(true);
+          }}
+        >
           <Suspense fallback={null}>
             <Welcome scroll={scroll} setScroll={setScroll} />
             <ZoomHandler targetZoom={zoom} />
