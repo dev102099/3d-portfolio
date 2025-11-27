@@ -61,7 +61,7 @@ export default function RealNightOcean() {
         <LoaderOverlay isReady={isReady} />
         <ZoomButtons setZoom={setZoom} zoom={zoom} />
         <Canvas
-          camera={{ position: [0, 20, 60], fov: 55, far: 20000 }}
+          camera={{ position: [50, 5, 0], fov: 55, far: 20000 }}
           onCreated={({ gl, scene, camera }) => {
             // Force a compile of all shaders immediately
             gl.compile(scene, camera);
@@ -69,20 +69,21 @@ export default function RealNightOcean() {
             setIsReady(true);
           }}
         >
+          <OrbitControls target={[0, 0, -50]} />
           <Suspense fallback={null}>
-            <Welcome scroll={scroll} setScroll={setScroll} />
+            {/*<Welcome scroll={scroll} setScroll={setScroll} />*/}
             <ZoomHandler targetZoom={zoom} />
-            {scroll && (
+            {/*scroll && (
               <ScrollControls pages={2}>
                 <SceneNavigation active={scroll} />
               </ScrollControls>
-            )}
-            <ambientLight intensity={0.4} />
+            )*/}
+            <ambientLight intensity={10} />
             <Clouds frustumCulled={false}>
               <Cloud
                 segments={45}
                 opacity={0.05}
-                scale={150}
+                scale={300}
                 speed={0.5}
                 growth={2}
                 color="white"
@@ -107,7 +108,7 @@ export default function RealNightOcean() {
               children={
                 <ProjectHotspot
                   name={"Resume"}
-                  args={[0.3, 0.5, 1.7]}
+                  args={[1.7, 0.3, 0.3]}
                   position={[-1.35, 0, 0.2]}
                   resume={true}
                   url={
@@ -139,23 +140,19 @@ export default function RealNightOcean() {
                   <ProjectHotspot
                     name="AI Mock Interview Platform"
                     url="https://ai-mock-interview-platform-z5b7.vercel.app"
-                    position={[-1, 0, 0.3]}
-                    htmlPos={[4, 1, 0]}
-                    args={[0.3, 0.5, 1.2]}
+                    args={[1.7, 0.2, 0.3]}
                   />
                   <ProjectHotspot
                     name="AI Document Summarizer"
                     url="https://ai-document-summary.onrender.com"
                     position={[-0.4, 0, 0.3]}
-                    htmlPos={[4, 1, 0]}
-                    args={[0.1, 0.5, 1.2]}
+                    args={[1.7, 0.2, 0.3]}
                   />
                   <ProjectHotspot
                     name="BrickByBrick - Property Marketplace"
                     url="http://brickbybrick-a-real-estate-website-1.onrender.com"
-                    position={[0.25, 0, 0.3]}
-                    htmlPos={[4.1, 1, 0]}
-                    args={[0.2, 0.5, 1.2]}
+                    position={[0.27, 0, 0.3]}
+                    args={[1.7, 0.2, 0.3]}
                   />
                 </>
               }
@@ -190,45 +187,40 @@ export default function RealNightOcean() {
               children={
                 <>
                   <ProjectHotspot
-                    position={[-0.38, 0, 0.1]}
-                    args={[0.25, 0.5, 1.7]}
+                    position={[-0.3, 0.1, 0.1]}
+                    args={[1.7, 0.2, 0.3]}
                     name={"devparpyani@gmail.com"}
                     img={"/textures/model/contact/communication.png"}
-                    htmlPos={[3.9, 1, 0]}
                     contact={true}
                   />
                   <ProjectHotspot
-                    position={[-0.1, 0, 0.1]}
-                    args={[0.25, 0.5, 1.7]}
+                    position={[-0.06, 0, 0]}
+                    args={[1.9, 0.2, 0.3]}
                     name={"Github"}
                     img={"/textures/model/contact/github-sign.png"}
                     url={"http://github.com/dev102099"}
-                    htmlPos={[3.9, 1, 0]}
                     contact={true}
                   />
                   <ProjectHotspot
-                    position={[0.2, 0, 0.2]}
-                    args={[0.2, 0.5, 1.4]}
+                    position={[0.25, 0, 0.2]}
+                    args={[1.5, 0.2, 0.3]}
                     name={"+91 9302769377"}
                     img={"/textures/model/contact/call.png"}
-                    htmlPos={[4.2, 1, 0]}
                     contact={true}
                   />
                   <ProjectHotspot
-                    position={[0.55, 0, 0.1]}
-                    args={[0.28, 0.5, 1.7]}
+                    position={[0.59, 0, 0]}
+                    args={[1.9, 0.3, 0.3]}
                     name={"LinkedIn"}
                     img={"/textures/model/contact/linkedin.png"}
                     url={"http://www.linkedin.com/in/dev-p-42449822a"}
-                    htmlPos={[4.5, 1, 0]}
                     contact={true}
                   />
                   <ProjectHotspot
-                    position={[1.4, 0, 0]}
-                    args={[0.28, 0.5, 1.7]}
+                    position={[1.48, 0, 0]}
+                    args={[1, 0.2, 0.3]}
                     name={"Gwalior, Madhya Pradesh, India"}
                     img={"/textures/model/contact/maps-and-flags.png"}
-                    htmlPos={[4.8, 1, 0]}
                     contact={true}
                   />
                 </>
