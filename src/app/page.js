@@ -73,7 +73,7 @@ export default function RealNightOcean() {
             <Welcome scroll={scroll} setScroll={setScroll} />
             <ZoomHandler targetZoom={zoom} />
             {scroll && (
-              <ScrollControls>
+              <ScrollControls pages={2}>
                 <SceneNavigation active={scroll} />
               </ScrollControls>
             )}
@@ -81,7 +81,7 @@ export default function RealNightOcean() {
             <Clouds frustumCulled={false}>
               <Cloud
                 segments={45}
-                opacity={0.09}
+                opacity={0.05}
                 scale={150}
                 speed={0.5}
                 growth={2}
@@ -104,6 +104,17 @@ export default function RealNightOcean() {
               label={"Hi"}
               roughness={0.5}
               model={"textures/model/landing/landing.glb"}
+              children={
+                <ProjectHotspot
+                  name={"Resume"}
+                  args={[0.3, 0.5, 1.7]}
+                  position={[-1.35, 0, 0.2]}
+                  resume={true}
+                  url={
+                    "https://drive.google.com/file/d/1rFvyxywAr-i1PfCLCDlR73kF-AKEHsMU/view?usp=sharing"
+                  }
+                />
+              }
               meshName={"low_landing"}
               normal={"textures/model/landing/final_normal_landing.exr"}
               color={"textures/model/landing/final_color_landing.exr"}
@@ -129,21 +140,21 @@ export default function RealNightOcean() {
                     name="AI Mock Interview Platform"
                     url="https://ai-mock-interview-platform-z5b7.vercel.app"
                     position={[-1, 0, 0.3]}
-                    htmlPos={[1.5, 1, -0.3]}
+                    htmlPos={[4, 1, 0]}
                     args={[0.3, 0.5, 1.2]}
                   />
                   <ProjectHotspot
                     name="AI Document Summarizer"
                     url="https://ai-document-summary.onrender.com"
                     position={[-0.4, 0, 0.3]}
-                    htmlPos={[1.7, 1, -0.3]}
+                    htmlPos={[4, 1, 0]}
                     args={[0.1, 0.5, 1.2]}
                   />
                   <ProjectHotspot
                     name="BrickByBrick - Property Marketplace"
                     url="http://brickbybrick-a-real-estate-website-1.onrender.com"
                     position={[0.25, 0, 0.3]}
-                    htmlPos={[1.7, 1, -0.3]}
+                    htmlPos={[4.1, 1, 0]}
                     args={[0.2, 0.5, 1.2]}
                   />
                 </>

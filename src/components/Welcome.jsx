@@ -8,23 +8,30 @@ function Welcome({ scroll, setScroll }) {
   const p0 = new THREE.Vector3(0, 100, 500);
   const l0 = new THREE.Vector3(0, -400, 0);
   const goRef = useRef();
+  const textRef = useRef();
 
   const mouseIn = () => {
     gsap.to(goRef.current, {
-      duration: 1,
+      duration: 0.5,
+      width: "100%",
       ease: "power1.in",
-      backgroundImage: "linear-gradient(to right, #4b6cb7 , #182848 )",
-      webkitBackgroundClip: "text",
-      backgroundClip: "text",
-      color: "transparent",
+    });
+    gsap.to(textRef.current, {
+      duration: 0.5,
+      color: "white",
+      ease: "power1.in",
     });
   };
   const mouseOut = () => {
     gsap.to(goRef.current, {
-      duration: 1,
-      ease: "power1.out",
-
-      color: "white",
+      duration: 0.5,
+      width: "20%",
+      ease: "power1.in",
+    });
+    gsap.to(textRef.current, {
+      duration: 0.5,
+      color: "#002B76",
+      ease: "power1.in",
     });
   };
 
@@ -41,30 +48,36 @@ function Welcome({ scroll, setScroll }) {
   return (
     <group position={[0, 80, 480]} rotation={[-Math.PI / 4, 0, 0]}>
       <Html transform>
-        <div className="p-10 flex flex-col gap-6   min-w-200 rounded-3xl border border-dashed border-y-amber-300 bg-white/20 backdrop-blur-3xl">
-          <div className="bg-gradient-to-b self-center from-[#4b6cb7] to-[#182848] bg-clip-text text-transparent">
-            <span className="font-semibold  text-5xl">
+        <div className="flex flex-col gap-6  w-[150vh] h-130 rounded-4xl  bg-white ">
+          <div className="h-[40%] rounded-t-2xl w-full flex items-center justify-center bg-[#002B76]">
+            <span className="font-semibold font-mystic text-white text-5xl">
               Welcome to my Porfolio!
             </span>
           </div>
 
-          <span className="text-xl font-semibold">
-            This is a 3D interactive portfolio not your typical porfolios.
+          <span className="text-2xl p-3 font-mystic  text-[#002B76] font-semibold">
+            This is a 3D interactive portfolio not your typical portfolios.
             Thought of presenting something new and unique so tried 3d web
-            Rendering Via react three fiber and other libraries to make this.
-            Please explore the portfolio and if you like the work do reach out.
+            Rendering Via react three fiber and other libraries to make this,
+            and all the models too are made by me in blender. Please explore the
+            portfolio and even the stone models are interactive so keep that in
+            mind and if you like the work do reach out.
           </span>
           <div
-            onMouseOver={mouseIn}
-            onMouseOut={mouseOut}
-            className="bg-white self-center mt-5 bg-clip-text text-transparent"
+            onMouseEnter={mouseIn}
+            onMouseLeave={mouseOut}
+            onClick={() => {
+              setScroll(true);
+            }}
+            className="  relative border cursor-pointer border-dashed border-gray-400 self-center mt-5 w-60 h-20"
           >
-            <span
+            <div
               ref={goRef}
-              onClick={() => {
-                setScroll(true);
-              }}
-              className="font-bold text-4xl border  border-gray-400 p-3 rounded-2xl  cursor-pointer"
+              className="w-[20%] h-full rounded-r-full bg-[#002B76]"
+            ></div>
+            <span
+              ref={textRef}
+              className="font-bold text-4xl  text-[#002B76] absolute  bottom-4.5 left-14  cursor-pointer"
             >
               Lets Go!
             </span>

@@ -13,6 +13,7 @@ export default function ProjectHotspot({
   htmlPos,
   img,
   contact,
+  resume,
 }) {
   const [hovered, setHovered] = useState(false);
   const popRef = useRef();
@@ -55,7 +56,7 @@ export default function ProjectHotspot({
           setHovered(true);
         }}
         onPointerOut={() => setHovered(false)}
-        visible={false}
+        visible={true}
       >
         <boxGeometry args={args} />
         <meshBasicMaterial color="red" wireframe />{" "}
@@ -63,7 +64,7 @@ export default function ProjectHotspot({
 
       {/* 3. THE "CLICK TO VISIT" DIALOGUE */}
 
-      <Html center position={htmlPos} distanceFactor={5}>
+      <Html position={htmlPos}>
         <div
           ref={popRef}
           className="rounded-xl cursor-pointer opacity-0 flex flex-col p-3 w-80 flex-wrap h-fit gap-3 bg-white-200/20 backdrop-blur-xl border border-dashed border-gray-500"
@@ -74,9 +75,8 @@ export default function ProjectHotspot({
               <span>{name}</span>
             </div>
 
-            {contact ? null : (
+            {contact || resume ? null : (
               <>
-                <br />
                 <span className="text-sm text-[15px]">
                   Please read the tabloit for more info.
                 </span>
@@ -84,8 +84,12 @@ export default function ProjectHotspot({
             )}
           </div>
 
-          <span className="text-[10px] hover:underline ">
-            {contact ? "Click to connect." : "Click Here to visit live demo"}
+          <span className="text-[10px] hover:underline animate-pulse ">
+            {resume
+              ? "Click to access my resume."
+              : contact
+              ? "Click to connect."
+              : "Click Here to visit live demo"}
           </span>
         </div>
       </Html>

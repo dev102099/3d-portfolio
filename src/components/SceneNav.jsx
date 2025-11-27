@@ -28,6 +28,7 @@ export default function SceneNavigation({ active }) {
 
   useFrame((state, delta) => {
     const offset = scroll.offset;
+    console.log(offset);
 
     if (offset < 0.25) {
       const t = offset / 0.25;
@@ -47,12 +48,41 @@ export default function SceneNavigation({ active }) {
       targetLook.current.lerpVectors(l3, l4, t);
     }
 
-    state.camera.position.lerp(targetPos.current, 0.05);
+    state.camera.position.lerp(targetPos.current, 0.1);
 
     const currentLook = new THREE.Vector3();
     state.camera.getWorldDirection(currentLook).add(state.camera.position);
-    currentLook.lerp(targetLook.current, 0.05);
+    currentLook.lerp(targetLook.current, 0.5);
     state.camera.lookAt(currentLook);
+
+    // --- FIX: ROBUST LATCH ---
+
+    // 1. Calculate where we SHOULD be (The Target)
+    const currentSection = Math.round(scroll.offset * 4);
+    const targetOffset = currentSection / 4;
+    const targetPixel =
+      targetOffset * (scroll.el.scrollHeight - scroll.el.clientHeight);
+
+    // 2. Calculate how far off we are (The Distance)
+    const scrollDiff = targetPixel - scroll.el.scrollTop;
+
+    // 3. The Logic:
+    //    Condition A: The user has largely stopped scrolling (delta < 0.001)
+    //    Condition B: We are not already perfect (abs(diff) > 1)
+    if (Math.abs(scroll.delta) < 0.0001 && Math.abs(scrollDiff) > 1) {
+      // Move scrollbar towards target
+      scroll.el.scrollTop = THREE.MathUtils.lerp(
+        scroll.el.scrollTop,
+        targetPixel,
+        1 // Increased strength (0.1) to snap faster and avoid "hanging"
+      );
+
+      // FORCE SNAP: If we are super close (less than 2 pixels), just lock it.
+      // This prevents that annoying "micro-drift" at the end.
+      if (Math.abs(scrollDiff) < 2) {
+        scroll.el.scrollTop = targetPixel;
+      }
+    }
   });
 
   return null;
