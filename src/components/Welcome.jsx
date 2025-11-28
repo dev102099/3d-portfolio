@@ -59,21 +59,23 @@ function Welcome({ scroll, setScroll, setInstructions }) {
   return (
     <group position={[0, 80, 480]} rotation={[-Math.PI / 4, 0, 0]}>
       <Html transform>
-        <div className="flex flex-col gap-6  w-[150vh] h-130 rounded-4xl  bg-white ">
-          <div className="h-[40%] rounded-t-2xl w-full flex items-center justify-center bg-[#002B76]">
-            <span className="font-semibold font-mystic text-white text-5xl">
+        <div className="flex flex-col gap-6 border opacity-80   w-[150vh] h-130 rounded-4xl  bg-white/20 backdrop-blur-3xl ">
+          <div className="bg-gradient-to-r h-15 self-center mt-20 mb-10 from-[#FFC11F] via-[#FE650D] to-[#DA1F05] text-transparent bg-clip-text">
+            <span className="font-semibold  font-mystic text-5xl">
               Welcome to my Porfolio!
             </span>
           </div>
+          <div className="bg-gradient-to-r  self-center  opacity-80 from-[#FFC11F] via-[#FE650D] to-[#DA1F05]  p-5 text-transparent bg-clip-text">
+            <span className="text-2xl font-mystic  font-semibold">
+              This is a 3D interactive portfolio not your typical portfolios.
+              Thought of presenting something new and unique so tried 3d web
+              Rendering Via react three fiber and other libraries to make this,
+              and all the models too are made by me in blender. Please explore
+              the portfolio and even the stone models are interactive so keep
+              that in mind and if you like the work do reach out.
+            </span>
+          </div>
 
-          <span className="text-2xl p-3 font-mystic  text-[#002B76] font-semibold">
-            This is a 3D interactive portfolio not your typical portfolios.
-            Thought of presenting something new and unique so tried 3d web
-            Rendering Via react three fiber and other libraries to make this,
-            and all the models too are made by me in blender. Please explore the
-            portfolio and even the stone models are interactive so keep that in
-            mind and if you like the work do reach out.
-          </span>
           <div
             onMouseEnter={mouseIn}
             onMouseLeave={mouseOut}
@@ -83,15 +85,15 @@ function Welcome({ scroll, setScroll, setInstructions }) {
                 setInstructions(true);
               }, 500);
             }}
-            className="  relative border cursor-pointer border-dashed border-gray-400 self-center mt-5 w-60 h-20"
+            className="  relative border cursor-pointer border-dashed  self-center mt-5 w-60 h-20"
           >
             <div
               ref={goRef}
-              className="w-[20%] h-full rounded-r-full bg-[#002B76]"
+              className="w-[20%] h-full rounded-r-full from-[#FFC11F] via-[#FE650D] to-[#DA1F05] bg-gradient-to-r"
             ></div>
             <span
               ref={textRef}
-              className="font-bold text-4xl  text-[#002B76] absolute  bottom-4.5 left-14  cursor-pointer"
+              className="font-bold text-4xl  text-black absolute  bottom-4.5 left-14  cursor-pointer"
             >
               Lets Go!
             </span>
