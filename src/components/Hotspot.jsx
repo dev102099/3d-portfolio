@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { Html, useCursor } from "@react-three/drei";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { useFrame } from "@react-three/fiber";
 
 export default function ProjectHotspot({
   position,
@@ -31,34 +32,32 @@ export default function ProjectHotspot({
     if (hovered) {
       gsap.to(popRef.current, {
         duration: 0.6,
-        opacity: 100,
+        opacity: 1,
+
         scale: 1,
-        y: 0,
-        ease: "back.in",
+        ease: "power1.in",
         overwrite: "auto",
       });
     } else {
       gsap.to(popRef.current, {
         duration: 1,
         opacity: 0,
-        scale: 0.5,
-        y: 10,
+
         ease: "back.out",
         overwrite: "auto",
       });
     }
   }, [hovered]);
-  const boxHeight = args[2];
+
   return (
     <group position={position} rotation={[-1.56, 0, 1.58]}>
-      <axesHelper />
       <mesh
         onClick={handleClick}
         onPointerOver={() => {
           setHovered(true);
         }}
         onPointerOut={() => setHovered(false)}
-        visible={true}
+        visible={false}
       >
         <boxGeometry args={args} />
         <meshBasicMaterial color="red" wireframe />{" "}
@@ -66,39 +65,43 @@ export default function ProjectHotspot({
 
       {/* 3. THE "CLICK TO VISIT" DIALOGUE */}
 
-      <Html scale={0.2} transform position={[0, 0, 0.3]}>
-        <div
-          ref={popRef}
-          style={{
-            background: "rgba(255,255,255,0.3)",
-            backdropFilter: "blur(100px)",
-          }}
-          className="rounded-xl cursor-pointer opacity-0 flex flex-col p-3 w-60 flex-wrap h-fit gap-3 bg-white-200/20 backdrop-blur-xl border border-dashed border-gray-500"
-        >
-          <div className="bg-clip-text flex flex-col text-transparent bg-gradient-to-r from-[#FFC11F] via-[#FE650D] to-[#DA1F05]">
-            <div className="flex gap-3 items-center">
-              {img ? <img src={img} height={30} width={30} alt="logo" /> : null}
-              <span className="text-[12px]">{name}</span>
+      <group position={htmlPos}>
+        <Html scale={0.2} center eps={0.0001} transform>
+          <div
+            ref={popRef}
+            style={{
+              background: "rgba(255,255,255,0.3)",
+              backdropFilter: "blur(100px)",
+            }}
+            className="rounded-xl cursor-pointer opacity-0 flex flex-col p-3 w-60 flex-wrap h-fit gap-3 bg-white-200/20 backdrop-blur-xl border border-dashed border-gray-500"
+          >
+            <div className="bg-clip-text flex flex-col text-transparent bg-gradient-to-r from-[#FFC11F] via-[#FE650D] to-[#DA1F05]">
+              <div className="flex gap-3 items-center">
+                {img ? (
+                  <img src={img} height={30} width={30} alt="logo" />
+                ) : null}
+                <span className="text-[12px]">{name}</span>
+              </div>
+
+              {contact || resume ? null : (
+                <>
+                  <span className="text-[10px]">
+                    Please read the tabloit for more info.
+                  </span>
+                </>
+              )}
             </div>
 
-            {contact || resume ? null : (
-              <>
-                <span className="text-[10px]">
-                  Please read the tabloit for more info.
-                </span>
-              </>
-            )}
+            <span className="text-[10px] hover:underline animate-pulse ">
+              {resume
+                ? "Click to access my resume."
+                : contact
+                ? "Click to connect."
+                : "Click Here to visit live demo"}
+            </span>
           </div>
-
-          <span className="text-[10px] hover:underline animate-pulse ">
-            {resume
-              ? "Click to access my resume."
-              : contact
-              ? "Click to connect."
-              : "Click Here to visit live demo"}
-          </span>
-        </div>
-      </Html>
+        </Html>
+      </group>
     </group>
   );
 }

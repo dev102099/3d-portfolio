@@ -1,89 +1,112 @@
 "use client";
 
-import { useFrame } from "@react-three/fiber";
-import { useScroll } from "@react-three/drei";
+import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import { useRef } from "react";
-
-const p0 = new THREE.Vector3(50, 1, 4);
-const l0 = new THREE.Vector3(50, 0, 0);
-
-const p1 = new THREE.Vector3(-50, 1, 4);
-const l1 = new THREE.Vector3(-50, 0, 0);
-
-const p2 = new THREE.Vector3(-50, 1, -96);
-const l2 = new THREE.Vector3(-50, 0, -100);
-
-const p3 = new THREE.Vector3(50, 1, -96);
-const l3 = new THREE.Vector3(50, 0, -100);
-
-const p4 = new THREE.Vector3(0, 1, -46);
-const l4 = new THREE.Vector3(0, 0, -50);
+import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
 
 export default function SceneNavigation({ active }) {
-  const scroll = useScroll();
+  const { camera } = useThree();
+  const [index, setIndex] = useState(0); // 0: Landing, 1: Skills, 2: Projects, 3: Work
+  const isAnimating = useRef(false); // Locks input while moving
 
-  const targetPos = useRef(new THREE.Vector3(0, 0, 0));
-  const targetLook = useRef(new THREE.Vector3(0, 0, 0));
+  // --- DEFINE YOUR STOPS ---
+  // Store them in an array for easy indexing
+  const stops = [
+    // Index 0: Landing
+    {
+      pos: new THREE.Vector3(50, 1, 4),
+      look: new THREE.Vector3(50, 0, 0),
+    },
+    // Index 1: Work (Assuming this is next based on your previous code)
+    {
+      pos: new THREE.Vector3(-50, 1, 4),
+      look: new THREE.Vector3(-50, 0, 0),
+    },
+    // Index 2: Projects
+    {
+      pos: new THREE.Vector3(-50, 1, -96),
+      look: new THREE.Vector3(-50, 0, -100),
+    },
+    // Index 3: Skills
+    {
+      pos: new THREE.Vector3(50, 1, -96),
+      look: new THREE.Vector3(50, 0, -100),
+    },
+    {
+      pos: new THREE.Vector3(0, 1, -46),
+      look: new THREE.Vector3(0, 0, -50),
+    },
+  ];
 
-  useFrame((state, delta) => {
-    const offset = scroll.offset;
-    console.log(offset);
+  useEffect(() => {
+    if (!active) return;
 
-    if (offset < 0.25) {
-      const t = offset / 0.25;
-      targetPos.current.lerpVectors(p0, p1, t);
-      targetLook.current.lerpVectors(l0, l1, t);
-    } else if (offset < 0.5) {
-      const t = (offset - 0.25) / 0.25;
-      targetPos.current.lerpVectors(p1, p2, t);
-      targetLook.current.lerpVectors(l1, l2, t);
-    } else if (offset < 0.75) {
-      const t = (offset - 0.5) / 0.25;
-      targetPos.current.lerpVectors(p2, p3, t);
-      targetLook.current.lerpVectors(l2, l3, t);
-    } else {
-      const t = (offset - 0.75) / 0.25;
-      targetPos.current.lerpVectors(p3, p4, t);
-      targetLook.current.lerpVectors(l3, l4, t);
-    }
+    const handleScroll = (e) => {
+      // 1. If currently moving, ignore input (The "Lock")
+      console.log(e.target.value);
+      if (isAnimating.current) return;
 
-    state.camera.position.lerp(targetPos.current, 0.1);
+      // 2. Determine Direction
+      // e.deltaY > 0 means scrolling DOWN
+      // e.deltaY < 0 means scrolling UP
+      const direction = e.deltaY > 0 ? 1 : -1;
 
+      // 3. Update Index safely
+      setIndex((prev) => {
+        const next = prev + direction;
+        // Clamp between 0 and last index
+        if (next < 0) return 0;
+        if (next >= stops.length) return stops.length - 1;
+        return next;
+      });
+    };
+
+    window.addEventListener("wheel", handleScroll);
+    return () => window.removeEventListener("wheel", handleScroll);
+  }, [active, stops.length]);
+
+  // --- ANIMATION LOGIC ---
+  useEffect(() => {
+    // Determine target based on new index
+    const target = stops[index];
+
+    isAnimating.current = true; // Lock inputs
+
+    // Animate Position
+    gsap.to(camera.position, {
+      x: target.pos.x,
+      y: target.pos.y,
+      z: target.pos.z,
+      duration: 2, // How long the flight takes (Seconds)
+      ease: "power2.inOut", // Smooth start and stop
+    });
+
+    // Animate Rotation (via OrbitControls target or manual lookAt)
+    // Since we aren't using OrbitControls, we animate a dummy object
+    // and make the camera look at it every frame
     const currentLook = new THREE.Vector3();
-    state.camera.getWorldDirection(currentLook).add(state.camera.position);
-    currentLook.lerp(targetLook.current, 0.5);
-    state.camera.lookAt(currentLook);
+    camera.getWorldDirection(currentLook).add(camera.position);
 
-    // --- FIX: ROBUST LATCH ---
+    // We create a temporary object to animate the "LookAt" point
+    const lookObj = { x: currentLook.x, y: currentLook.y, z: currentLook.z };
 
-    // 1. Calculate where we SHOULD be (The Target)
-    const currentSection = Math.round(scroll.offset * 4);
-    const targetOffset = currentSection / 4;
-    const targetPixel =
-      targetOffset * (scroll.el.scrollHeight - scroll.el.clientHeight);
-
-    // 2. Calculate how far off we are (The Distance)
-    const scrollDiff = targetPixel - scroll.el.scrollTop;
-
-    // 3. The Logic:
-    //    Condition A: The user has largely stopped scrolling (delta < 0.001)
-    //    Condition B: We are not already perfect (abs(diff) > 1)
-    if (Math.abs(scroll.delta) < 0.0001 && Math.abs(scrollDiff) > 1) {
-      // Move scrollbar towards target
-      scroll.el.scrollTop = THREE.MathUtils.lerp(
-        scroll.el.scrollTop,
-        targetPixel,
-        1 // Increased strength (0.1) to snap faster and avoid "hanging"
-      );
-
-      // FORCE SNAP: If we are super close (less than 2 pixels), just lock it.
-      // This prevents that annoying "micro-drift" at the end.
-      if (Math.abs(scrollDiff) < 2) {
-        scroll.el.scrollTop = targetPixel;
-      }
-    }
-  });
+    gsap.to(lookObj, {
+      x: target.look.x,
+      y: target.look.y,
+      z: target.look.z,
+      duration: 2,
+      ease: "power2.inOut",
+      onUpdate: () => {
+        // Every frame of animation, update camera rotation
+        camera.lookAt(lookObj.x, lookObj.y, lookObj.z);
+      },
+      onComplete: () => {
+        // Unlock inputs when finished
+        isAnimating.current = false;
+      },
+    });
+  }, [index, camera]);
 
   return null;
 }
