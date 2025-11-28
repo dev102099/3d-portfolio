@@ -115,8 +115,8 @@ export default function RealNightOcean() {
             <StoneSlab
               rotation={[Math.PI / 2, -1.57, 0]}
               position={[-50, 0, 0]}
+              roughness={2}
               normalValue={[4, 4]}
-              roughness={0.5}
               model={"textures/model/work/workEx.glb"}
               meshName={"low_work"}
               normal={"textures/model/work/normal_work.exr"}
@@ -155,8 +155,8 @@ export default function RealNightOcean() {
               model={"textures/model/projects/projects-new.glb"}
               meshName={"low_project"}
               roughness={0.5}
-              normal={"textures/model/projects/normal_project.001.exr"}
-              color={"textures/model/projects/ao_project_final.exr"}
+              normal={"textures/model/projects/normal_project.001.png"}
+              color={"textures/model/projects/ao_project_final.jpg"}
             />
             {/* skills */}
             <StoneSlab
