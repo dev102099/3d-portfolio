@@ -2,14 +2,7 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Suspense, useRef, useState } from "react";
-import {
-  Cloud,
-  Clouds,
-  OrbitControls,
-  Preload,
-  ScrollControls,
-  Stars,
-} from "@react-three/drei";
+import { Cloud, Clouds, Preload, Stars } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import OceanSurface from "@/components/Water";
 import * as THREE from "three";
@@ -22,6 +15,7 @@ import ZoomHandler from "@/components/ZoomHandler";
 import ProjectHotspot from "@/components/Hotspot";
 import LoaderOverlay from "@/components/LoaderOverlay";
 import Welcome from "@/components/Welcome";
+import Instruction from "@/components/Instruction";
 
 const MovingSphere = ({ meshRef, lightRef }) => {
   useFrame((state) => {
@@ -51,26 +45,27 @@ export default function RealNightOcean() {
   const glowRef = useRef();
   const lightRef = useRef();
   const [zoom, setZoom] = useState(1);
-  const [intro, setIntro] = useState(true);
   const [scroll, setScroll] = useState(false);
+  const [instructions, setInstructions] = useState(false);
+
   const [isReady, setIsReady] = useState(false);
 
   return (
     <>
       <div className="relative h-full w-full">
         <LoaderOverlay isReady={isReady} />
+        {instructions && <Instruction setScroll={setScroll} />}
+
         <ZoomButtons setZoom={setZoom} zoom={zoom} />
         <Canvas
           camera={{ position: [0, 0, 0], fov: 55, far: 20000 }}
           onCreated={({ gl, scene, camera }) => {
-            // Force a compile of all shaders immediately
             gl.compile(scene, camera);
-            // Tell React we are ready to show the scene
             setIsReady(true);
           }}
         >
           <Suspense fallback={null}>
-            {<Welcome scroll={scroll} setScroll={setScroll} />}
+            {!instructions && <Welcome setInstructions={setInstructions} />}
             <ZoomHandler targetZoom={zoom} />
             {scroll && <SceneNavigation active={scroll} />}
 
@@ -91,7 +86,6 @@ export default function RealNightOcean() {
             <FireRing position={[-50, -11, -100]} scale={6} />
             <FireRing position={[50, -11, -100]} scale={6} />
             <FireRing position={[0, -11, -50]} scale={6} />
-            {/* 3. Movement Controller */}
 
             {/* landing */}
             <StoneSlab
@@ -106,6 +100,7 @@ export default function RealNightOcean() {
                   name={"Resume"}
                   args={[1.7, 0.3, 0.3]}
                   position={[-1.35, 0, 0.2]}
+                  htmlPos={[0, 0.3, 0]}
                   resume={true}
                   url={
                     "https://drive.google.com/file/d/1rFvyxywAr-i1PfCLCDlR73kF-AKEHsMU/view?usp=sharing"

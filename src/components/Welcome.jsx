@@ -1,14 +1,18 @@
 import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import gsap from "gsap";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import * as THREE from "three";
 
-function Welcome({ scroll, setScroll }) {
+function Welcome({ scroll, setScroll, setInstructions }) {
   const p0 = new THREE.Vector3(0, 100, 500);
   const l0 = new THREE.Vector3(0, -400, 0);
+  const p1 = new THREE.Vector3(50, 1, 0);
+  const l1 = new THREE.Vector3(50, 1, 0);
+
   const goRef = useRef();
   const textRef = useRef();
+  const [move, setMove] = useState(false);
 
   const mouseIn = () => {
     gsap.to(goRef.current, {
@@ -43,6 +47,13 @@ function Welcome({ scroll, setScroll }) {
       currentLook.lerp(l0, 0.05);
       state.camera.lookAt(currentLook);
     }
+    if (move) {
+      state.camera.position.lerp(p1, 0.05);
+      const currentLook = new THREE.Vector3();
+      state.camera.getWorldDirection(currentLook).add(state.camera.position);
+      currentLook.lerp(l1, 0.05);
+      state.camera.lookAt(currentLook);
+    }
   });
 
   return (
@@ -67,7 +78,10 @@ function Welcome({ scroll, setScroll }) {
             onMouseEnter={mouseIn}
             onMouseLeave={mouseOut}
             onClick={() => {
-              setScroll(true);
+              setMove(true);
+              setTimeout(() => {
+                setInstructions(true);
+              }, 500);
             }}
             className="  relative border cursor-pointer border-dashed border-gray-400 self-center mt-5 w-60 h-20"
           >
