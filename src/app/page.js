@@ -102,6 +102,7 @@ export default function RealNightOcean() {
                   position={[-1.35, 0, 0.2]}
                   htmlPos={[0, 0.3, 0]}
                   resume={true}
+                  img={"/Dev.jpg"}
                   url={
                     "https://drive.google.com/file/d/1rFvyxywAr-i1PfCLCDlR73kF-AKEHsMU/view?usp=sharing"
                   }
