@@ -5,6 +5,7 @@ import { Html, useCursor } from "@react-three/drei";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { useFrame } from "@react-three/fiber";
+import Image from "next/image";
 
 export default function ProjectHotspot({
   position,
@@ -78,7 +79,13 @@ export default function ProjectHotspot({
             <div className="bg-clip-text flex flex-col text-transparent bg-gradient-to-r from-[#FFC11F] via-[#FE650D] to-[#DA1F05]">
               <div className="flex gap-3 items-center">
                 {img ? (
-                  <img src={img} height={30} width={30} alt="logo" />
+                  <Image
+                    loading="lazy"
+                    src={img}
+                    height={30}
+                    width={30}
+                    alt="logo"
+                  />
                 ) : null}
                 <span className="text-[12px]">{name}</span>
               </div>

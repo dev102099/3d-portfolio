@@ -8,6 +8,19 @@
     "start": "next start",
     "lint": "eslint"
   },
+  "browserslist": {
+  "production": [
+    "last 2 chrome versions",
+    "last 2 edge versions",
+    "last 2 firefox versions",
+    "not ie 11",
+    "not dead"
+  ],
+  "development": [
+    "last 1 chrome version"
+  ]
+}
+,
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
     "@gsap/react": "^2.1.2",
