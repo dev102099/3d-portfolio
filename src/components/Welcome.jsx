@@ -34,7 +34,7 @@ function Welcome({ scroll, setScroll, setInstructions }) {
     });
     gsap.to(textRef.current, {
       duration: 0.5,
-      color: "#002B76",
+      color: "black",
       ease: "power1.in",
     });
   };

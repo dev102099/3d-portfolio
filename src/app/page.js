@@ -91,10 +91,10 @@ export default function RealNightOcean() {
             <StoneSlab
               rotation={[Math.PI / 2, -1.57, 0]}
               position={[50, 0, 0]}
-              normalValue={[4, 4]}
+              normalValue={[2, 2]}
               label={"Hi"}
-              roughness={0.5}
-              model={"textures/model/landing/landing.glb"}
+              roughness={2}
+              model={"textures/model/landing/landing-1.glb"}
               children={
                 <ProjectHotspot
                   name={"Resume"}
@@ -109,66 +109,66 @@ export default function RealNightOcean() {
                 />
               }
               meshName={"low_landing"}
-              normal={"textures/model/landing/final_normal_landing.exr"}
-              color={"textures/model/landing/final_color_landing.exr"}
+              normal={"textures/model/landing/final_n_landing.webp"}
+              color={"textures/model/landing/final_c_landing.webp"}
             />
             {/* workex */}
             <StoneSlab
               rotation={[Math.PI / 2, -1.57, 0]}
               position={[-50, 0, 0]}
               roughness={2}
-              normalValue={[4, 4]}
-              model={"textures/model/work/workEx.glb"}
+              normalValue={[2, 2]}
+              model={"textures/model/work/workEx-0.glb"}
               meshName={"low_work"}
-              normal={"textures/model/work/normal_work.exr"}
-              color={"textures/model/work/color_work.exr"}
+              normal={"textures/model/work/final_n_work.webp"}
+              color={"textures/model/work/final_color_work.webp"}
             />
             {/* project */}
             <StoneSlab
               rotation={[Math.PI / 2, -1.57, 0]}
-              normalValue={[4, 4]}
+              normalValue={[2, 2]}
               children={
                 <>
                   <ProjectHotspot
                     name="AI Mock Interview Platform"
                     htmlPos={[-1.4, 0, 0.2]}
                     url="https://ai-mock-interview-platform-z5b7.vercel.app"
-                    args={[1.7, 0.2, 0.3]}
-                    position={[-1, 0.3, 0.3]}
+                    args={[1.4, 0.2, 0.3]}
+                    position={[-1, 0.2, 0.2]}
                   />
                   <ProjectHotspot
                     name="AI Document Summarizer"
                     htmlPos={[-1.4, 0, 0.2]}
                     url="https://ai-document-summary.onrender.com"
-                    position={[-0.4, 0, 0.3]}
-                    args={[1.7, 0.2, 0.3]}
+                    position={[-0.1, 0, 0.3]}
+                    args={[1.4, 0.2, 0.3]}
                   />
                   <ProjectHotspot
                     name="BrickByBrick - Property Marketplace"
                     htmlPos={[-1.4, 0, 0.2]}
                     url="http://brickbybrick-a-real-estate-website-1.onrender.com"
-                    position={[0.27, 0, 0.3]}
-                    args={[1.7, 0.2, 0.3]}
+                    position={[0.8, 0, 0]}
+                    args={[2, 0.2, 0.3]}
                   />
                 </>
               }
               position={[-50, 0, -100]}
-              model={"textures/model/projects/projects-new.glb"}
+              model={"textures/model/projects/projects-0.glb"}
               meshName={"low_project"}
-              roughness={0.5}
-              normal={"textures/model/projects/normal_project.001.png"}
-              color={"textures/model/projects/ao_project_final.jpg"}
+              roughness={2}
+              normal={"textures/model/projects/normal_project.webp"}
+              color={"textures/model/projects/color_project.webp"}
             />
             {/* skills */}
             <StoneSlab
               rotation={[Math.PI / 2, -1.57, 0]}
               position={[50, 0, -100]}
-              normalValue={[4, 4]}
-              roughness={0.5}
-              model={"textures/model/skills/skills-3.glb"}
-              meshName={"Cube002"}
-              normal={"textures/model/skills/normal_skills.exr"}
-              color={"textures/model/skills/color_skills.exr"}
+              normalValue={[1, 1]}
+              roughness={2}
+              model={"textures/model/skills/skills.glb"}
+              meshName={"low_skills_1"}
+              normal={"textures/model/skills/final_normal_skills-0.webp"}
+              color={"textures/model/skills/final_color_skills-0.webp"}
             />
             {/* contact */}
             <StoneSlab
@@ -268,7 +268,6 @@ export default function RealNightOcean() {
             <EffectComposer disableNormalPass multisampling={0}>
               <Bloom luminanceThreshold={1} mipmapBlur={true} intensity={1.0} />
             </EffectComposer>
-            <Preload all />
           </Suspense>
         </Canvas>
       </div>
