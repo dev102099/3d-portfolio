@@ -101,10 +101,10 @@ export default function ProjectHotspot({
 
             <span className="text-[10px] hover:underline animate-pulse ">
               {resume
-                ? "Click to access my resume."
+                ? "Click on the engraving to access my resume."
                 : contact
-                ? "Click to connect."
-                : "Click Here to visit live demo"}
+                ? "Click on the engraving to connect."
+                : "Click on the engraving to visit live demo"}
             </span>
           </div>
         </Html>
