@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 
-export default function InstructionOverlay({ onDismiss, setScroll }) {
+export default function InstructionOverlay({
+  onDismiss,
+  instructions,
+  setInstructions,
+}) {
   const [fading, setFading] = useState(false);
 
   const handleDismiss = () => {
@@ -12,6 +16,7 @@ export default function InstructionOverlay({ onDismiss, setScroll }) {
 
   return (
     <div
+      hidden={instructions}
       className={`absolute inset-0 z-[6000] flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity duration-500 ${
         fading ? "opacity-0 pointer-events-none" : "opacity-100"
       }`}
@@ -61,7 +66,7 @@ export default function InstructionOverlay({ onDismiss, setScroll }) {
         <button
           onClick={() => {
             handleDismiss();
-            setScroll(true);
+            setInstructions(true);
           }}
           className="px-8 py-3 bg-gold text-black font-bold uppercase tracking-widest bg-white hover:bg-black hover: border hover:text-white transition-colors rounded-sm"
         >

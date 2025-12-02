@@ -4,7 +4,7 @@ import gsap from "gsap";
 import React, { useRef, useState } from "react";
 import * as THREE from "three";
 
-function Welcome({ scroll, setScroll, setInstructions }) {
+function Welcome({ scroll, setScroll, setInstructions, instructions }) {
   const p0 = new THREE.Vector3(0, 100, 500);
   const l0 = new THREE.Vector3(0, -400, 0);
   const p1 = new THREE.Vector3(50, 1, 0);
@@ -40,7 +40,7 @@ function Welcome({ scroll, setScroll, setInstructions }) {
   };
 
   useFrame((state) => {
-    if (!scroll) {
+    if (scroll === false) {
       state.camera.position.lerp(p0, 0.05);
       const currentLook = new THREE.Vector3();
       state.camera.getWorldDirection(currentLook).add(state.camera.position);
@@ -73,9 +73,8 @@ function Welcome({ scroll, setScroll, setInstructions }) {
             onMouseEnter={mouseIn}
             onMouseLeave={mouseOut}
             onClick={() => {
-              setMove(true);
               setTimeout(() => {
-                setInstructions(true);
+                setInstructions(false);
                 setScroll(true);
               }, 500);
             }}

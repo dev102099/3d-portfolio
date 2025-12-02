@@ -9,7 +9,7 @@ function ZoomButtons({ setZoom, zoom }) {
   };
 
   return (
-    <div className="absolute z-[1000] flex flex-col gap-4">
+    <div className="absolute z-[1000] left-340 top-5 flex flex-col gap-4">
       <button
         onClick={zoomIn}
         className="p-3 rounded-full bg-white/40 backdrop-blur-3xl "

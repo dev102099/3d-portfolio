@@ -52,6 +52,7 @@ export default function SceneNavigation({ active }) {
   }, [active, index, stops.length]);
 
   useEffect(() => {
+    if (!active) return;
     const target = stops[index];
 
     gsap.to(camera.position, {
@@ -79,6 +80,6 @@ export default function SceneNavigation({ active }) {
         isAnimating.current = false;
       },
     });
-  }, [index, camera]);
+  }, [active, index, camera]);
   return null;
 }

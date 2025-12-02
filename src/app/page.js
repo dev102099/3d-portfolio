@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Suspense, useRef, useState } from "react";
+import { memo, Suspense, useRef, useState } from "react";
 import { Cloud, Clouds, Preload, Stars } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import OceanSurface from "@/components/Water";
@@ -46,15 +46,20 @@ export default function RealNightOcean() {
   const lightRef = useRef();
   const [zoom, setZoom] = useState(1);
   const [scroll, setScroll] = useState(false);
-  const [instructions, setInstructions] = useState(false);
+  const [instructions, setInstructions] = useState(true);
 
   const [isReady, setIsReady] = useState(false);
+  const MemoizedOcean = memo(OceanSurface);
+  const MemoizedParticles = memo(GoldenParticles);
 
   return (
     <>
       <div className="relative h-full w-full">
         <LoaderOverlay isReady={isReady} />
-        {instructions && <Instruction setScroll={setScroll} />}
+        <Instruction
+          instructions={instructions}
+          setInstructions={setInstructions}
+        />
 
         <ZoomButtons setZoom={setZoom} zoom={zoom} />
         <Canvas
@@ -65,15 +70,14 @@ export default function RealNightOcean() {
           }}
         >
           <Suspense fallback={null}>
-            {!instructions && (
-              <Welcome
-                setInstructions={setInstructions}
-                setScroll={setScroll}
-              />
-            )}
+            <Welcome
+              setInstructions={setInstructions}
+              instructions={instructions}
+              setScroll={setScroll}
+              scroll={scroll}
+            />
             <ZoomHandler targetZoom={zoom} />
-            {scroll && <SceneNavigation active={scroll} />}
-
+            <SceneNavigation active={scroll} />
             <ambientLight intensity={0.4} />
             <Clouds frustumCulled={false}>
               <Cloud
@@ -85,13 +89,12 @@ export default function RealNightOcean() {
                 color="white"
               />
             </Clouds>
-            <GoldenParticles count={4000} />
+            <MemoizedParticles count={4000} />
             <FireRing position={[50, -11, 0]} scale={6} />
             <FireRing position={[-50, -11, 0]} scale={6} />
             <FireRing position={[-50, -11, -100]} scale={6} />
             <FireRing position={[50, -11, -100]} scale={6} />
             <FireRing position={[0, -11, -50]} scale={6} />
-
             {/* landing */}
             <StoneSlab
               rotation={[Math.PI / 2, -1.57, 0]}
@@ -183,8 +186,8 @@ export default function RealNightOcean() {
               roughness={2}
               model={"textures/model/contact/Contact.glb"}
               meshName={"low_conatct"}
-              normal={"textures/model/contact/final_normal_contact.png"}
-              color={"textures/model/contact/final_color_contact.jpg"}
+              normal={"textures/model/contact/final_normal_contact-lossy.webp"}
+              color={"textures/model/contact/final_color_contact-lossy.webp"}
               children={
                 <>
                   <ProjectHotspot
@@ -232,33 +235,32 @@ export default function RealNightOcean() {
                 </>
               }
             />
-            {/* 4. The Glowing Object Group */}
-            {scroll && (
-              <>
-                {" "}
-                <MovingSphere meshRef={glowRef} lightRef={lightRef} />*
-                <group>
-                  <mesh ref={glowRef}>
-                    <sphereGeometry args={[0.03, 32, 32]} />
+            {/* 4. The Glowing Object Group */}(
+            <>
+              {" "}
+              <MovingSphere meshRef={glowRef} lightRef={lightRef} />*
+              <group visible={scroll}>
+                <mesh ref={glowRef}>
+                  <sphereGeometry args={[0.03, 32, 32]} />
 
-                    <meshStandardMaterial
-                      emissive="white"
-                      emissiveIntensity={4}
-                      toneMapped={false}
-                    />
-                  </mesh>
-
-                  <pointLight
-                    ref={lightRef}
-                    distance={10}
-                    decay={2}
-                    color="white"
-                    intensity={15}
+                  <meshStandardMaterial
+                    emissive="white"
+                    emissiveIntensity={4}
+                    toneMapped={false}
                   />
-                </group>
-              </>
-            )}
-            <OceanSurface />
+                </mesh>
+
+                <pointLight
+                  ref={lightRef}
+                  distance={10}
+                  decay={2}
+                  color="white"
+                  intensity={15}
+                />
+              </group>
+            </>
+            )
+            <MemoizedOcean />
             <Stars
               radius={5000}
               depth={500}
@@ -268,7 +270,6 @@ export default function RealNightOcean() {
               fade
               speed={1}
             />
-
             {/* 5. Post Processing - The Safe Configuration */}
             <EffectComposer disableNormalPass multisampling={0}>
               <Bloom luminanceThreshold={1} mipmapBlur={true} intensity={1.0} />
