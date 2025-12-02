@@ -8,7 +8,7 @@ const geistSans = Geist({
 });
 
 const mysticFont = localFont({
-  src: "./fonts/Quicksand-VariableFont_wght.ttf",
+  src: "./fonts/Texturina/Texturina-VariableFont_opsz,wght.ttf",
   variable: "--font-mystic",
   // weight: "100 900",
 });

@@ -65,7 +65,12 @@ export default function RealNightOcean() {
           }}
         >
           <Suspense fallback={null}>
-            {!instructions && <Welcome setInstructions={setInstructions} />}
+            {!instructions && (
+              <Welcome
+                setInstructions={setInstructions}
+                setScroll={setScroll}
+              />
+            )}
             <ZoomHandler targetZoom={zoom} />
             {scroll && <SceneNavigation active={scroll} />}
 
