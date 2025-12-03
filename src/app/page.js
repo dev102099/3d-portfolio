@@ -16,6 +16,7 @@ import ProjectHotspot from "@/components/Hotspot";
 import LoaderOverlay from "@/components/LoaderOverlay";
 import Welcome from "@/components/Welcome";
 import Instruction from "@/components/Instruction";
+import MobileGuard from "@/components/AlertMobile";
 
 const MovingSphere = ({ meshRef, lightRef }) => {
   useFrame((state) => {
@@ -41,6 +42,9 @@ const MovingSphere = ({ meshRef, lightRef }) => {
   return null;
 };
 
+const MemoizedOcean = memo(OceanSurface);
+const MemoizedParticles = memo(GoldenParticles);
+
 export default function RealNightOcean() {
   const glowRef = useRef();
   const lightRef = useRef();
@@ -49,234 +53,240 @@ export default function RealNightOcean() {
   const [instructions, setInstructions] = useState(true);
 
   const [isReady, setIsReady] = useState(false);
-  const MemoizedOcean = memo(OceanSurface);
-  const MemoizedParticles = memo(GoldenParticles);
 
   return (
     <>
-      <div className="relative h-full w-full">
-        <LoaderOverlay isReady={isReady} />
-        <Instruction
-          instructions={instructions}
-          setInstructions={setInstructions}
-        />
+      <MobileGuard>
+        <div className="relative h-full w-full">
+          <LoaderOverlay isReady={isReady} />
+          <Instruction
+            instructions={instructions}
+            setInstructions={setInstructions}
+          />
 
-        <ZoomButtons setZoom={setZoom} zoom={zoom} />
-        <Canvas
-          camera={{ position: [0, 0, 0], fov: 55, far: 20000 }}
-          onCreated={({ gl, scene, camera }) => {
-            gl.compile(scene, camera);
-            setIsReady(true);
-          }}
-        >
-          <Suspense fallback={null}>
-            <Welcome
-              setInstructions={setInstructions}
-              instructions={instructions}
-              setScroll={setScroll}
-              scroll={scroll}
-            />
-            <ZoomHandler targetZoom={zoom} />
-            <SceneNavigation active={scroll} />
-            <ambientLight intensity={0.4} />
-            <Clouds frustumCulled={false}>
-              <Cloud
-                segments={45}
-                opacity={0.05}
-                scale={300}
-                speed={0.5}
-                growth={2}
-                color="white"
+          <ZoomButtons setZoom={setZoom} zoom={zoom} />
+          <Canvas
+            camera={{ position: [0, 0, 0], fov: 55, far: 20000 }}
+            onCreated={({ gl, scene, camera }) => {
+              gl.compile(scene, camera);
+              setIsReady(true);
+            }}
+          >
+            <Suspense fallback={null}>
+              <Welcome
+                setInstructions={setInstructions}
+                instructions={instructions}
+                setScroll={setScroll}
+                scroll={scroll}
               />
-            </Clouds>
-            <MemoizedParticles count={4000} />
-            <FireRing position={[50, -11, 0]} scale={6} />
-            <FireRing position={[-50, -11, 0]} scale={6} />
-            <FireRing position={[-50, -11, -100]} scale={6} />
-            <FireRing position={[50, -11, -100]} scale={6} />
-            <FireRing position={[0, -11, -50]} scale={6} />
-            {/* landing */}
-            <StoneSlab
-              rotation={[Math.PI / 2, -1.57, 0]}
-              position={[50, 0, 0]}
-              normalValue={[2, 2]}
-              label={"Hi"}
-              roughness={2}
-              model={"textures/model/landing/landing-1.glb"}
-              children={
-                <ProjectHotspot
-                  name={"Resume"}
-                  args={[1.7, 0.3, 0.3]}
-                  position={[-1.35, 0, 0.2]}
-                  htmlPos={[0, 0.3, 0]}
-                  resume={true}
-                  img={"/Dev.jpg"}
-                  url={
-                    "https://drive.google.com/file/d/1rFvyxywAr-i1PfCLCDlR73kF-AKEHsMU/view?usp=sharing"
-                  }
-                />
-              }
-              meshName={"low_landing"}
-              normal={"textures/model/landing/final_n_landing.webp"}
-              color={"textures/model/landing/final_c_landing.webp"}
-            />
-            {/* workex */}
-            <StoneSlab
-              rotation={[Math.PI / 2, -1.57, 0]}
-              position={[-50, 0, 0]}
-              roughness={2}
-              normalValue={[2, 2]}
-              model={"textures/model/work/workEx-0.glb"}
-              meshName={"low_work"}
-              normal={"textures/model/work/final_n_work.webp"}
-              color={"textures/model/work/final_color_work.webp"}
-            />
-            {/* project */}
-            <StoneSlab
-              rotation={[Math.PI / 2, -1.57, 0]}
-              normalValue={[2, 2]}
-              children={
-                <>
-                  <ProjectHotspot
-                    name="AI Mock Interview Platform"
-                    htmlPos={[-1.4, 0, 0.2]}
-                    url="https://ai-mock-interview-platform-z5b7.vercel.app"
-                    args={[1.4, 0.2, 0.3]}
-                    position={[-1, 0.2, 0.2]}
-                  />
-                  <ProjectHotspot
-                    name="AI Document Summarizer"
-                    htmlPos={[-1.4, 0, 0.2]}
-                    url="https://ai-document-summary.onrender.com"
-                    position={[-0.1, 0, 0.3]}
-                    args={[1.4, 0.2, 0.3]}
-                  />
-                  <ProjectHotspot
-                    name="BrickByBrick - Property Marketplace"
-                    htmlPos={[-1.4, 0, 0.2]}
-                    url="http://brickbybrick-a-real-estate-website-1.onrender.com"
-                    position={[0.8, 0, 0]}
-                    args={[2, 0.2, 0.3]}
-                  />
-                </>
-              }
-              position={[-50, 0, -100]}
-              model={"textures/model/projects/projects-0.glb"}
-              meshName={"low_project"}
-              roughness={2}
-              normal={"textures/model/projects/normal_project.webp"}
-              color={"textures/model/projects/color_project.webp"}
-            />
-            {/* skills */}
-            <StoneSlab
-              rotation={[Math.PI / 2, -1.57, 0]}
-              position={[50, 0, -100]}
-              normalValue={[1, 1]}
-              roughness={2}
-              model={"textures/model/skills/skills.glb"}
-              meshName={"low_skills_1"}
-              normal={"textures/model/skills/final_normal_skills-0.webp"}
-              color={"textures/model/skills/final_color_skills-0.webp"}
-            />
-            {/* contact */}
-            <StoneSlab
-              rotation={[Math.PI / 2, -1.57, 0]}
-              position={[0, 0, -50]}
-              normalValue={[2, 2]}
-              roughness={2}
-              model={"textures/model/contact/Contact.glb"}
-              meshName={"low_conatct"}
-              normal={"textures/model/contact/final_normal_contact-lossy.webp"}
-              color={"textures/model/contact/final_color_contact-lossy.webp"}
-              children={
-                <>
-                  <ProjectHotspot
-                    position={[-0.3, 0.1, 0.1]}
-                    htmlPos={[-1.5, 0, 0.2]}
-                    args={[1.7, 0.2, 0.3]}
-                    name={"devparpyani@gmail.com"}
-                    img={"/textures/model/contact/communication.png"}
-                    contact={true}
-                  />
-                  <ProjectHotspot
-                    position={[-0.06, 0.1, 0]}
-                    htmlPos={[-1.6, 0, 0.2]}
-                    args={[1.9, 0.2, 0.3]}
-                    name={"Github"}
-                    img={"/textures/model/contact/github-sign.png"}
-                    url={"http://github.com/dev102099"}
-                    contact={true}
-                  />
-                  <ProjectHotspot
-                    position={[0.25, 0.1, 0.2]}
-                    htmlPos={[-1.4, 0, 0.2]}
-                    args={[1.5, 0.2, 0.3]}
-                    name={"+91 9302769377"}
-                    img={"/textures/model/contact/call.png"}
-                    contact={true}
-                  />
-                  <ProjectHotspot
-                    position={[0.59, 0.1, 0]}
-                    htmlPos={[-1.6, 0, 0.2]}
-                    args={[1.9, 0.3, 0.3]}
-                    name={"LinkedIn"}
-                    img={"/textures/model/contact/linkedin.png"}
-                    url={"http://www.linkedin.com/in/dev-p-42449822a"}
-                    contact={true}
-                  />
-                  <ProjectHotspot
-                    position={[1.48, 0.1, 0]}
-                    htmlPos={[-1.2, 0, 0.2]}
-                    args={[1, 0.2, 0.3]}
-                    name={"Gwalior, Madhya Pradesh, India"}
-                    img={"/textures/model/contact/maps-and-flags.png"}
-                    contact={true}
-                  />
-                </>
-              }
-            />
-            {/* 4. The Glowing Object Group */}(
-            <>
-              {" "}
-              <MovingSphere meshRef={glowRef} lightRef={lightRef} />*
-              <group visible={scroll}>
-                <mesh ref={glowRef}>
-                  <sphereGeometry args={[0.03, 32, 32]} />
-
-                  <meshStandardMaterial
-                    emissive="white"
-                    emissiveIntensity={4}
-                    toneMapped={false}
-                  />
-                </mesh>
-
-                <pointLight
-                  ref={lightRef}
-                  distance={10}
-                  decay={2}
+              <ZoomHandler targetZoom={zoom} />
+              <SceneNavigation active={scroll} />
+              <ambientLight intensity={0.4} />
+              <Clouds frustumCulled={false}>
+                <Cloud
+                  segments={45}
+                  opacity={0.05}
+                  scale={300}
+                  speed={0.5}
+                  growth={2}
                   color="white"
-                  intensity={15}
                 />
-              </group>
-            </>
-            )
-            <MemoizedOcean />
-            <Stars
-              radius={5000}
-              depth={500}
-              count={5000}
-              factor={1}
-              saturation={10}
-              fade
-              speed={1}
-            />
-            {/* 5. Post Processing - The Safe Configuration */}
-            <EffectComposer disableNormalPass multisampling={0}>
-              <Bloom luminanceThreshold={1} mipmapBlur={true} intensity={1.0} />
-            </EffectComposer>
-          </Suspense>
-        </Canvas>
-      </div>
+              </Clouds>
+              <MemoizedParticles count={4000} />
+              <FireRing position={[50, -11, 0]} scale={6} />
+              <FireRing position={[-50, -11, 0]} scale={6} />
+              <FireRing position={[-50, -11, -100]} scale={6} />
+              <FireRing position={[50, -11, -100]} scale={6} />
+              <FireRing position={[0, -11, -50]} scale={6} />
+              {/* landing */}
+              <StoneSlab
+                rotation={[Math.PI / 2, -1.57, 0]}
+                position={[50, 0, 0]}
+                normalValue={[2, 2]}
+                label={"Hi"}
+                roughness={2}
+                model={"textures/model/landing/landing-1.glb"}
+                children={
+                  <ProjectHotspot
+                    name={"Resume"}
+                    args={[1.7, 0.3, 0.3]}
+                    position={[-1.35, 0, 0.2]}
+                    htmlPos={[0, 0.3, 0]}
+                    resume={true}
+                    img={"/Dev.jpg"}
+                    url={
+                      "https://drive.google.com/file/d/1rFvyxywAr-i1PfCLCDlR73kF-AKEHsMU/view?usp=sharing"
+                    }
+                  />
+                }
+                meshName={"low_landing"}
+                normal={"textures/model/landing/final_n_landing.webp"}
+                color={"textures/model/landing/final_c_landing.webp"}
+              />
+              {/* workex */}
+              <StoneSlab
+                rotation={[Math.PI / 2, -1.57, 0]}
+                position={[-50, 0, 0]}
+                roughness={2}
+                normalValue={[2, 2]}
+                model={"textures/model/work/workEx-0.glb"}
+                meshName={"low_work"}
+                normal={"textures/model/work/final_n_work.webp"}
+                color={"textures/model/work/final_color_work.webp"}
+              />
+              {/* project */}
+              <StoneSlab
+                rotation={[Math.PI / 2, -1.57, 0]}
+                normalValue={[2, 2]}
+                children={
+                  <>
+                    <ProjectHotspot
+                      name="AI Mock Interview Platform"
+                      htmlPos={[-1.4, 0, 0.2]}
+                      url="https://ai-mock-interview-platform-z5b7.vercel.app"
+                      args={[1.4, 0.2, 0.3]}
+                      position={[-1, 0.2, 0.2]}
+                    />
+                    <ProjectHotspot
+                      name="AI Document Summarizer"
+                      htmlPos={[-1.4, 0, 0.2]}
+                      url="https://ai-document-summary.onrender.com"
+                      position={[-0.1, 0, 0.3]}
+                      args={[1.4, 0.2, 0.3]}
+                    />
+                    <ProjectHotspot
+                      name="BrickByBrick - Property Marketplace"
+                      htmlPos={[-1.4, 0, 0.2]}
+                      url="http://brickbybrick-a-real-estate-website-1.onrender.com"
+                      position={[0.8, 0, 0]}
+                      args={[2, 0.2, 0.3]}
+                    />
+                  </>
+                }
+                position={[-50, 0, -100]}
+                model={"textures/model/projects/projects-0.glb"}
+                meshName={"low_project"}
+                roughness={2}
+                normal={"textures/model/projects/normal_project.webp"}
+                color={"textures/model/projects/color_project.webp"}
+              />
+              {/* skills */}
+              <StoneSlab
+                rotation={[Math.PI / 2, -1.57, 0]}
+                position={[50, 0, -100]}
+                normalValue={[1, 1]}
+                roughness={2}
+                model={"textures/model/skills/skills.glb"}
+                meshName={"low_skills_1"}
+                normal={"textures/model/skills/final_normal_skills-0.webp"}
+                color={"textures/model/skills/final_color_skills-0.webp"}
+              />
+              {/* contact */}
+              <StoneSlab
+                rotation={[Math.PI / 2, -1.57, 0]}
+                position={[0, 0, -50]}
+                normalValue={[2, 2]}
+                roughness={2}
+                model={"textures/model/contact/Contact.glb"}
+                meshName={"low_conatct"}
+                normal={
+                  "textures/model/contact/final_normal_contact-lossy.webp"
+                }
+                color={"textures/model/contact/final_color_contact-lossy.webp"}
+                children={
+                  <>
+                    <ProjectHotspot
+                      position={[-0.3, 0.1, 0.1]}
+                      htmlPos={[-1.5, 0, 0.2]}
+                      args={[1.7, 0.2, 0.3]}
+                      name={"devparpyani@gmail.com"}
+                      img={"/textures/model/contact/communication.png"}
+                      contact={true}
+                    />
+                    <ProjectHotspot
+                      position={[-0.06, 0.1, 0]}
+                      htmlPos={[-1.6, 0, 0.2]}
+                      args={[1.9, 0.2, 0.3]}
+                      name={"Github"}
+                      img={"/textures/model/contact/github-sign.png"}
+                      url={"http://github.com/dev102099"}
+                      contact={true}
+                    />
+                    <ProjectHotspot
+                      position={[0.25, 0.1, 0.2]}
+                      htmlPos={[-1.4, 0, 0.2]}
+                      args={[1.5, 0.2, 0.3]}
+                      name={"+91 9302769377"}
+                      img={"/textures/model/contact/call.png"}
+                      contact={true}
+                    />
+                    <ProjectHotspot
+                      position={[0.59, 0.1, 0]}
+                      htmlPos={[-1.6, 0, 0.2]}
+                      args={[1.9, 0.3, 0.3]}
+                      name={"LinkedIn"}
+                      img={"/textures/model/contact/linkedin.png"}
+                      url={"http://www.linkedin.com/in/dev-p-42449822a"}
+                      contact={true}
+                    />
+                    <ProjectHotspot
+                      position={[1.48, 0.1, 0]}
+                      htmlPos={[-1.2, 0, 0.2]}
+                      args={[1, 0.2, 0.3]}
+                      name={"Gwalior, Madhya Pradesh, India"}
+                      img={"/textures/model/contact/maps-and-flags.png"}
+                      contact={true}
+                    />
+                  </>
+                }
+              />
+              {/* 4. The Glowing Object Group */}(
+              <>
+                {" "}
+                <MovingSphere meshRef={glowRef} lightRef={lightRef} />*
+                <group>
+                  <mesh ref={glowRef} visible={scroll}>
+                    <sphereGeometry args={[0.03, 32, 32]} />
+
+                    <meshStandardMaterial
+                      emissive="white"
+                      emissiveIntensity={4}
+                      toneMapped={false}
+                    />
+                  </mesh>
+
+                  <pointLight
+                    ref={lightRef}
+                    distance={10}
+                    decay={2}
+                    color="white"
+                    intensity={scroll ? 15 : 0}
+                  />
+                </group>
+              </>
+              )
+              <MemoizedOcean />
+              <Stars
+                radius={5000}
+                depth={500}
+                count={5000}
+                factor={1}
+                saturation={10}
+                fade
+                speed={1}
+              />
+              {/* 5. Post Processing - The Safe Configuration */}
+              <EffectComposer disableNormalPass multisampling={0}>
+                <Bloom
+                  luminanceThreshold={1}
+                  mipmapBlur={true}
+                  intensity={1.0}
+                />
+              </EffectComposer>
+            </Suspense>
+          </Canvas>
+        </div>
+      </MobileGuard>
     </>
   );
 }

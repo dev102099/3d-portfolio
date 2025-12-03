@@ -1,7 +1,7 @@
 import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import gsap from "gsap";
-import React, { useRef, useState } from "react";
+import React, { startTransition, useRef, useState } from "react";
 import * as THREE from "three";
 
 function Welcome({ scroll, setScroll, setInstructions, instructions }) {
@@ -73,10 +73,12 @@ function Welcome({ scroll, setScroll, setInstructions, instructions }) {
             onMouseEnter={mouseIn}
             onMouseLeave={mouseOut}
             onClick={() => {
-              setTimeout(() => {
-                setInstructions(false);
+              startTransition(() => {
                 setScroll(true);
-              }, 500);
+                setTimeout(() => {
+                  setInstructions(false);
+                }, 2000);
+              });
             }}
             className="  relative border cursor-pointer border-dashed  self-center mt-5 w-60 h-20"
           >
