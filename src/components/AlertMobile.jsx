@@ -5,7 +5,6 @@ import useIsMobile from "./MobileGaurd";
 export default function MobileGuard({ children }) {
   const isMobile = useIsMobile();
 
-  // If mobile, show the warning overlay
   if (isMobile) {
     return (
       <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-zinc-950 px-6 text-center text-white">
@@ -41,6 +40,5 @@ export default function MobileGuard({ children }) {
     );
   }
 
-  // If Desktop, render the 3D scene normally
   return <>{children}</>;
 }
