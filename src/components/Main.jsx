@@ -79,7 +79,7 @@ export default function RealNightOcean() {
               scroll={scroll}
             />
             <ZoomHandler targetZoom={zoom} />
-            <SceneNavigation active={scroll} />
+            <SceneNavigation active={scroll} zoom={zoom} />
             <ambientLight intensity={0.4} />
             <Clouds frustumCulled={false}>
               <Cloud

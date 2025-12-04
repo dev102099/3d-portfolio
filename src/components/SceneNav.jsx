@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
-export default function SceneNavigation({ active }) {
+export default function SceneNavigation({ active, zoom }) {
   const { camera } = useThree();
   const [index, setIndex] = useState(0);
   const isAnimating = useRef(false);
@@ -34,6 +34,16 @@ export default function SceneNavigation({ active }) {
     if (!active) return;
 
     const handleScroll = (e) => {
+      if (zoom > 1) {
+        const panSpeed = 0.005;
+
+        camera.position.y += e.deltaY * panSpeed;
+
+        camera.position.y = THREE.MathUtils.clamp(camera.position.y, -1, 2);
+
+        return;
+      }
+
       if (isAnimating.current) return;
 
       const direction = e.deltaY > 0 ? 1 : -1;
@@ -49,7 +59,7 @@ export default function SceneNavigation({ active }) {
 
     window.addEventListener("wheel", handleScroll);
     return () => window.removeEventListener("wheel", handleScroll);
-  }, [active, index, stops.length]);
+  }, [active, index, stops.length, zoom, camera]);
 
   useEffect(() => {
     if (!active) return;
