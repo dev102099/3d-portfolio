@@ -127,7 +127,7 @@ export default function RealNightOcean() {
               rotation={[Math.PI / 2, -1.57, 0]}
               position={[-50, 0, 0]}
               roughness={2}
-              normalValue={[2, 2]}
+              normalValue={[3, 3]}
               model={"textures/model/work/workEx-0.glb"}
               meshName={"low_work"}
               normal={"textures/model/work/final_n_work.webp"}
@@ -173,7 +173,7 @@ export default function RealNightOcean() {
             <StoneSlab
               rotation={[Math.PI / 2, -1.57, 0]}
               position={[50, 0, -100]}
-              normalValue={[1, 1]}
+              normalValue={[2, 2]}
               roughness={2}
               model={"textures/model/skills/skills.glb"}
               meshName={"low_skills_1"}
@@ -184,7 +184,7 @@ export default function RealNightOcean() {
             <StoneSlab
               rotation={[Math.PI / 2, -1.57, 0]}
               position={[0, 0, -50]}
-              normalValue={[2, 2]}
+              normalValue={[3, 3]}
               roughness={2}
               model={"textures/model/contact/Contact.glb"}
               meshName={"low_conatct"}

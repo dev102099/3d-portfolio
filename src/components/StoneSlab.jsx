@@ -46,7 +46,7 @@ const StoneSlab = ({
 
   return (
     <group position={position} rotation={rotation}>
-      <mesh geometry={nodes[meshName]?.geometry}>
+      <mesh geometry={nodes[meshName]?.geometry} frustumCulled={false}>
         <meshStandardMaterial
           normalMap={normalMap}
           map={colorMap}
