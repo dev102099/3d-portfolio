@@ -60,7 +60,12 @@ export default function InstructionOverlay({
 
         <p className="text-sm text-gray-400 mb-8 leading-relaxed">
           Scroll to move between stones. <br />
-          Click on floating text to open links.
+          There are hidden floating links on the stones, they appear as you
+          hover over a certain part. Click on floating text to open links.{" "}
+          <br />
+          When zoomed in the navigation disables itself to give you zoom
+          controls. Zoom out completely to continue navigation between stones
+          and dont mind the camera will fix itself when navigating again.
         </p>
 
         <button
