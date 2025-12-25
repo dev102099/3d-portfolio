@@ -41,7 +41,6 @@ export default function SceneNavigation({ active, zoom }) {
     if (!active) return;
 
     const handleScroll = (e) => {
-      transitionRef.current.play();
       if (zoom > 1) {
         const panSpeed = 0.005;
 
@@ -71,7 +70,9 @@ export default function SceneNavigation({ active, zoom }) {
 
   useEffect(() => {
     if (!active) return;
+
     const target = stops[index];
+    transitionRef.current.play();
 
     gsap.to(camera.position, {
       x: target.pos.x,
