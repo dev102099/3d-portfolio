@@ -9,6 +9,7 @@ export default function SceneNavigation({ active, zoom }) {
   const { camera } = useThree();
   const [index, setIndex] = useState(0);
   const isAnimating = useRef(false);
+  const transitionRef = useRef(null);
 
   const stops = [
     { pos: new THREE.Vector3(50, 1, 3.5), look: new THREE.Vector3(50, 0.2, 0) }, // Landing
@@ -31,9 +32,16 @@ export default function SceneNavigation({ active, zoom }) {
   ];
 
   useEffect(() => {
+    transitionRef.current = new Audio("/audio/transition.mp3");
+    transitionRef.current.volume = 0.2;
+    transitionRef.preload = "none";
+  }, []);
+
+  useEffect(() => {
     if (!active) return;
 
     const handleScroll = (e) => {
+      transitionRef.current.play();
       if (zoom > 1) {
         const panSpeed = 0.005;
 

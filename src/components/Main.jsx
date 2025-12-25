@@ -17,6 +17,7 @@ import LoaderOverlay from "@/components/LoaderOverlay";
 import Welcome from "@/components/Welcome";
 import Instruction from "@/components/Instruction";
 import MobileGuard from "@/components/AlertMobile";
+import AudioSound from "./Audio";
 
 const MovingSphere = ({ meshRef, lightRef }) => {
   useFrame((state) => {
@@ -58,6 +59,7 @@ export default function RealNightOcean() {
     <>
       <div className="relative h-full w-full">
         <LoaderOverlay isReady={isReady} />
+        <AudioSound />
         <Instruction
           instructions={instructions}
           setInstructions={setInstructions}
