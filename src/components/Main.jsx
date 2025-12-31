@@ -65,7 +65,7 @@ export default function RealNightOcean() {
           setInstructions={setInstructions}
         />
 
-        <ZoomButtons setZoom={setZoom} zoom={zoom} />
+        {<ZoomButtons setZoom={setZoom} zoom={zoom} />}
         <Canvas
           camera={{ position: [0, 0, 0], fov: 55, far: 20000 }}
           onCreated={({ gl, scene, camera }) => {

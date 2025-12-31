@@ -15,7 +15,7 @@ function ZoomButtons({ setZoom, zoom }) {
   }, []);
 
   return (
-    <div className="absolute z-[1000] left-340 top-5 flex flex-col gap-4">
+    <div className="absolute z-[1000] left-[95%] top-5 flex flex-col gap-4">
       <button
         onClick={() => {
           zoomIn();

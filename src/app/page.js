@@ -11,9 +11,11 @@ const RealNightOcean = dynamic(() => import("../components/Main"), {
 function page() {
   return (
     <>
-      <MobileGuard>
-        <RealNightOcean />
-      </MobileGuard>
+      <div className="h-screen w-screen">
+        <MobileGuard>
+          <RealNightOcean />
+        </MobileGuard>
+      </div>
     </>
   );
 }
