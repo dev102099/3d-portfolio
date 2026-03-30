@@ -144,7 +144,7 @@ export default function RealNightOcean() {
                   <ProjectHotspot
                     name="AI Mock Interview Platform"
                     htmlPos={[-1.4, 0, 0.2]}
-                    url="https://ai-mock-interview-platform-z5b7.vercel.app"
+                    url="https://ai-mock-interview-platform-aoxh.vercel.app"
                     args={[1.4, 0.2, 0.3]}
                     position={[-1, 0.2, 0.2]}
                   />
